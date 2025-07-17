@@ -5,18 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Análisis Interactivo | Cuenca del Río Canoabo</title>
     
-    <!-- Chosen Palette: Calm Earth & Sky -->
-    <!-- Application Structure Plan: A tab-based, single-page dashboard. This structure allows users to explore the report's key themes (Overview, Climate, Soils, Erosion, Zoning) in a non-linear way, facilitating focused understanding. The flow guides the user from general context to specific challenges and finally to actionable recommendations, mirroring a logical discovery path. Key interactions include tab navigation to switch views, and hover/click events on charts to reveal detailed information, making the data digestible and engaging. This is more user-friendly than a long-scrolling page, as it chunks information into manageable, thematic sections. -->
-    <!-- Visualization & Content Choices: 
-        - Overview: Key stats (HTML) to provide immediate context. Goal: Inform. Justification: Fast delivery of core metrics.
-        - Climate: Donut chart (Chart.js) for Life Zone distribution. Goal: Compare proportions. Justification: Excellent for showing parts of a whole. Climosequence diagram (HTML/CSS) to visualize altitude's effect. Goal: Show relationships. Justification: A powerful, non-chart visual that explains a core concept of the report.
-        - Soils: Donut chart for soil types. Goal: Compare proportions. Interactive text blocks for soil properties. Goal: Inform with detail on demand. Justification: Prevents UI clutter by hiding detailed text until requested by the user via clicks.
-        - Erosion: Bar chart for erosion levels. Goal: Compare quantities. Donut chart for fragility. Goal: Compare proportions. Justification: Standard, clear charts for categorical data.
-        - Zoning: Donut chart for land use recommendations. Goal: Synthesize & Recommend. Justification: Clearly presents the final, actionable output of the study. Interactive text blocks explain each category on click.
-        - Library: Chart.js for all charts due to its simplicity, responsiveness, and canvas-based rendering.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,6 +50,19 @@
             margin-right: 0.5em;
             vertical-align: -0.125em;
         }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 
@@ -70,7 +71,7 @@
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
         <header class="text-center mb-8">
             <h1 class="text-4xl md:text-5xl font-bold text-slate-900">Análisis Interactivo de la Cuenca del Río Canoabo</h1>
-            <p class="mt-2 text-lg text-slate-600">Basado en los estudios de V. Sevilla L. y colaboradores</p>
+            <p class="mt-2 text-lg text-slate-600">Basado en los estudios de V. Sevilla L., J. Comerma y O. Silva</p>
         </header>
 
         <main class="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
@@ -90,10 +91,12 @@
                 <button data-tab="zoning" class="tab-button text-sm sm:text-base px-3 py-3 sm:px-4 sm:py-4 border-b-2 border-transparent hover:border-blue-500 hover:bg-blue-50 transition-colors duration-200">
                     <span class="icon">&#128204;</span>Zonificación
                 </button>
+                <button data-tab="ai-interaction" class="tab-button text-sm sm:text-base px-3 py-3 sm:px-4 sm:py-4 border-b-2 border-transparent hover:border-blue-500 hover:bg-blue-50 transition-colors duration-200">
+                    <span class="icon">&#129302;</span>Pregunta a la IA
+                </button>
             </nav>
 
             <div id="tab-content">
-                <!-- Visión General Section -->
                 <section id="overview" class="content-section">
                     <div class="p-2">
                         <h2 class="text-2xl font-bold text-slate-800 mb-4">Una Cuenca de Importancia Estratégica</h2>
@@ -121,7 +124,6 @@
                     </div>
                 </section>
 
-                <!-- Clima y Zonas de Vida Section -->
                 <section id="climate" class="content-section">
                      <div class="p-2">
                         <h2 class="text-2xl font-bold text-slate-800 mb-4">Clima, Altitud y Ecosistemas</h2>
@@ -150,12 +152,11 @@
                     </div>
                 </section>
 
-                <!-- Suelos Section -->
                 <section id="soils" class="content-section">
                     <div class="p-2">
                         <h2 class="text-2xl font-bold text-slate-800 mb-4">Tipos y Propiedades de Suelos</h2>
                         <p class="text-slate-600 mb-6 leading-relaxed">
-                            La climosecuencia también define los tipos de suelo. La uniformidad del material geológico (gneises y esquistos) y un paisaje relativamente estable han dado lugar a tres grandes grupos de suelos dominantes. Seleccione un tipo de suelo para ver sus características.
+                            La climosecuencia también define los tipos de suelo. La uniformidad del material geológico (gneises y esquistos) y un paisaje relativamente estable han dado lugar a tres grandes grupos de suelos dominantes. Seleccione un tipo de suelo para ver sus características y una explicación ✨ generada por IA.
                         </p>
                         <div class="grid md:grid-cols-2 gap-8 items-center">
                             <div>
@@ -167,19 +168,18 @@
                             <div class="bg-slate-50 p-4 rounded-lg shadow-sm min-h-[350px]">
                                 <h3 class="text-xl font-semibold text-slate-700 mb-3">Detalles del Suelo</h3>
                                 <div class="flex justify-center space-x-2 mb-4">
-                                    <button class="soil-button bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm hover:bg-blue-200 transition">Haplustalfs</button>
-                                    <button class="soil-button bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition">Hapludults</button>
-                                    <button class="soil-button bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm hover:bg-amber-200 transition">Haplustepts</button>
+                                    <button class="soil-button bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm hover:bg-blue-200 transition" data-soil-type="Haplustalfs">Haplustalfs</button>
+                                    <button class="soil-button bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition" data-soil-type="Hapludults">Hapludults</button>
+                                    <button class="soil-button bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm hover:bg-amber-200 transition" data-soil-type="Haplustepts">Haplustepts</button>
                                 </div>
                                 <div id="soil-details" class="text-slate-600 space-y-2">
-                                    <p>Seleccione un tipo de suelo para más información.</p>
+                                    <p>Seleccione un tipo de suelo para más información y su explicación ✨.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Erosión y Fragilidad Section -->
                 <section id="erosion" class="content-section">
                     <div class="p-2">
                         <h2 class="text-2xl font-bold text-slate-800 mb-4">Desafíos: Erosión y Fragilidad Ambiental</h2>
@@ -203,12 +203,11 @@
                     </div>
                 </section>
 
-                <!-- Zonificación Section -->
                 <section id="zoning" class="content-section">
                    <div class="p-2">
                         <h2 class="text-2xl font-bold text-slate-800 mb-4">Recomendaciones: Zonificación Agroecológica</h2>
                         <p class="text-slate-600 mb-6 leading-relaxed">
-                            Como síntesis del estudio, se propone una zonificación para el manejo sostenible. Las recomendaciones clasifican el territorio según su necesidad de preservación, rehabilitación o su aptitud para usos productivos, buscando un equilibrio entre la conservación y las actividades socioeconómicas.
+                            Como síntesis del estudio, se propone una zonificación para el manejo sostenible. Las recomendaciones clasifican el territorio según su necesidad de preservación, rehabilitación o su aptitud para usos productivos, buscando un equilibrio entre la conservación y las actividades socioeconómicas. Pase el cursor sobre el gráfico para ver la justificación ✨ generada por IA.
                         </p>
                         <div class="grid md:grid-cols-2 gap-8 items-center">
                              <div>
@@ -219,9 +218,29 @@
                             </div>
                             <div id="zoning-details" class="bg-slate-50 p-6 rounded-lg shadow-sm space-y-3 min-h-[350px]">
                                  <h3 class="text-xl font-semibold text-slate-700 mb-2">Descripción de la Zona</h3>
-                                 <p class="text-slate-600">Pase el cursor sobre el gráfico para ver los detalles de cada categoría de uso recomendado.</p>
+                                 <p class="text-slate-600">Haga clic en el gráfico para ver los detalles y la justificación ✨ de cada categoría de uso recomendado.</p>
                             </div>
                         </div>
+                    </div>
+                </section>
+
+                <section id="ai-interaction" class="content-section">
+                    <div class="p-2">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-4">Interactúa con nuestro Asistente de IA ✨</h2>
+                        <p class="text-slate-600 mb-6 leading-relaxed">
+                            Esta aplicación integra un chatbot de inteligencia artificial para ayudarte a explorar y comprender en profundidad los datos del estudio de la Cuenca del Río Canoabo. Puedes hacer preguntas en lenguaje natural sobre los suelos y la IA te proporcionará explicaciones y justificaciones contextualizadas.
+                        </p>
+                        <h3 class="text-xl font-semibold text-slate-700 mb-3">Ejemplos de preguntas que el chatbot puede responder (indirectamente):</h3>
+                        <ul class="list-disc list-inside space-y-2 pl-4 text-slate-600">
+                            <li>"¿Cuál es el rango de pH en el horizonte 1 para los suelos con uso de 'Ganadería Extensiva'?"</li>
+                            <li>"¿Qué tipo de suelos 'Haplustalfs' se encuentran en la localidad de 'Valle Hondo' y cuál es su profundidad?"</li>
+                            <li>"Describe la fertilidad de los suelos con 'Materia Orgánica' (h1_mo) superior a 5%."</li>
+                            <li>"¿Cuáles son las características de los suelos con 'pendiente' superior a 40% y uso 'Sin Uso'?"</li>
+                            <li>"¿Qué suelos tienen una 'textura_general' 'Fina' y una 'profundidad' 'Muy Profundo'?"</li>
+                        </ul>
+                        <p class="text-slate-600 mt-4">
+                            ¡Explora y aprende más sobre los suelos de la Cuenca del Río Canoabo con el poder de la IA!
+                        </p>
                     </div>
                 </section>
             </div>
@@ -229,11 +248,14 @@
 
         <footer class="text-center mt-8 text-sm text-slate-500">
             <p>Aplicación desarrollada con fines educativos y de divulgación.</p>
-            <p>&copy; 2025 Análisis Interactivo de la Cuenca del Río Canoabo.</p>
+             <p>&copy; 2025 Análisis Interactivo de la Cuenca del Río Canoabo. <b>desarrollado por JC</b></p>
         </footer>
     </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+
+    const apiKey = ""; // If you want to use models other than gemini-2.0-flash or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
 
     const chartColors = {
         blue: 'rgba(59, 130, 246, 0.7)',
@@ -272,35 +294,66 @@ document.addEventListener('DOMContentLoaded', () => {
         'Haplustalfs': {
             title: 'Haplustalfs (67%)',
             description: 'Son los suelos más extensos. Se encuentran típicamente en laderas intermedias y zonas con un período seco más marcado. Representan un estado de desarrollo pedogenético moderado.',
-            properties: ['Fertilidad media a baja', 'Generalmente ácidos', 'Texturas medias (Francas)']
+            properties: ['Fertilidad media a baja', 'Generalmente ácidos', 'Texturas medias (Francas)'],
+            llmPrompt: 'Explica la importancia y las características principales de los suelos Haplustalfs en el contexto agrícola de una cuenca tropical montañosa como la del Río Canoabo, incluyendo sus propiedades típicas y cómo influyen en el uso de la tierra. Responde en español.'
         },
         'Hapludults': {
             title: 'Hapludults (27%)',
             description: 'Comunes en zonas más húmedas y altas, como en áreas de bosque nublado. Muestran un mayor lavado de nutrientes y acumulación de materia orgánica en superficie (subgrupo Humic).',
-            properties: ['Mayor lavado de bases', 'Acumulación de MO en altura', 'Suelos ácidos']
+            properties: ['Mayor lavado de bases', 'Acumulación de MO en altura', 'Suelos ácidos'],
+            llmPrompt: 'Explica la importancia y las características principales de los suelos Hapludults en el contexto agrícola de una cuenca tropical montañosa como la del Río Canoabo, incluyendo sus propiedades típicas y cómo influyen en el uso de la tierra. Responde en español.'
         },
         'Haplustepts': {
             title: 'Haplustepts (4%)',
             description: 'Suelos más jóvenes, ubicados principalmente en los valles, formados a partir de materiales aluviales recientes. Su desarrollo de perfiles es incipiente.',
-            properties: ['Material parental reciente', 'Ubicados en valles', 'Desarrollo incipiente']
+            properties: ['Material parental reciente', 'Ubicados en valles', 'Desarrollo incipiente'],
+            llmPrompt: 'Explica la importancia y las características principales de los suelos Haplustepts en el contexto agrícola de una cuenca tropical montañosa como la del Río Canoabo, incluyendo sus propiedades típicas y cómo influyen en el uso de la tierra. Responde en español.'
         }
     };
     
     const zoningData = {
         'Preservación Prioritaria': {
-            details: 'Cubre el 49.8% de la cuenca. Incluye zonas de muy alta fragilidad y criticidad, como bosques nublados productores de agua y áreas con riesgo de inundación. Deben ser protegidas legalmente para garantizar los servicios ambientales.'
+            details: 'Cubre el 49.8% de la cuenca. Incluye zonas de muy alta fragilidad y criticidad, como bosques nublados productores de agua y áreas con riesgo de inundación. Deben ser protegidas legalmente para garantizar los servicios ambientales.',
+            llmPrompt: 'Explica la justificación de la categoría de zonificación "Preservación Prioritaria" en una cuenca como la del Río Canoabo, considerando sus características de suelo, clima, erosión y uso de la tierra, según estudios edafológicos. Responde en español.'
         },
         'Rehabilitación Necesaria': {
-            details: 'Aproximadamente el 15% de la cuenca. Son áreas con erosión de moderada a fuerte, especialmente en faldas de montañas, que requieren restauración antes de destinarlas a otros usos.'
+            details: 'Aproximadamente el 15% de la cuenca. Son áreas con erosión de moderada a fuerte, especialmente en faldas de montañas, que requieren restauración antes de destinarlas a otros usos.',
+            llmPrompt: 'Explica la justificación de la categoría de zonificación "Rehabilitación Necesaria" en una cuenca como la del Río Canoabo, considerando sus características de suelo, clima, erosión y uso de la tierra, según estudios edafológicos. Responde en español.'
         },
         'Uso con Restricciones': {
-            details: 'Representa el 19.5% de la cuenca. Son laderas bajas con fragilidad moderada aptas para usos conservacionistas como sistemas agroforestales y silvopastoriles.'
+            details: 'Representa el 19.5% de la cuenca. Son laderas bajas con fragilidad moderada aptas para usos conservacionistas como sistemas agroforestales y silvopastoriles.',
+            llmPrompt: 'Explica la justificación de la categoría de zonificación "Uso con Restricciones" en una cuenca como la del Río Canoabo, considerando sus características de suelo, clima, erosión y uso de la tierra, según estudios edafológicos. Responde en español.'
         },
         'Uso Agrícola Intensivo': {
-            details: 'Solo el 5.8% de la cuenca, localizado en el fondo del valle. Son las tierras de mejor calidad, con baja fragilidad, aptas para cultivos más intensivos como hortalizas, cereales y leguminosas.'
+            details: 'Solo el 5.8% de la cuenca, localizado en el fondo del valle. Son las tierras de mejor calidad, con baja fragilidad, aptas para cultivos más intensivos como hortalizas, cereales y leguminosas.',
+            llmPrompt: 'Explica la justificación de la categoría de zonificación "Uso Agrícola Intensivo" en una cuenca como la del Río Canoabo, considerando sus características de suelo, clima, erosión y uso de la tierra, según estudios edafológicos. Responde en español.'
         }
     };
 
+    async function callGeminiAPI(prompt) {
+        const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+            if (result.candidates && result.candidates.length > 0 &&
+                result.candidates[0].content && result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0) {
+                return result.candidates[0].content.parts[0].text;
+            } else {
+                console.error("Unexpected API response structure:", result);
+                return "Error: No se pudo obtener la información de la IA.";
+            }
+        } catch (error) {
+            console.error("Error calling Gemini API:", error);
+            return "Error al conectar con la IA. Intente de nuevo más tarde.";
+        }
+    }
 
     function createLifeZonesChart() {
         const ctx = document.getElementById('lifeZonesChart')?.getContext('2d');
@@ -475,29 +528,35 @@ document.addEventListener('DOMContentLoaded', () => {
                             },
                             afterLabel: function(context) {
                                 const label = context.chart.data.labels[context.dataIndex];
-                                return zoningData[label]?.details.substring(0, 80) + '...';
+                                return 'Haga clic para la justificación ✨';
                             }
                         }
                     }
                 },
-                onHover: (event, chartElement) => {
-                    const canvas = event.native.target;
-                    canvas.style.cursor = chartElement.length ? 'pointer' : 'default';
-                    
+                onClick: async (event, chartElements) => {
                     const detailsContainer = document.getElementById('zoning-details');
-                    if(chartElement.length > 0) {
-                        const index = chartElement[0].index;
+                    if (chartElements.length > 0) {
+                        const index = chartElements[0].index;
                         const label = zoningChartInstance.data.labels[index];
                         const data = zoningData[label];
-                        if (data) {
-                           detailsContainer.innerHTML = `
+                        if (data && data.llmPrompt) {
+                            detailsContainer.innerHTML = `<div class="loading-spinner"></div><p class="text-center text-slate-600">Cargando justificación de IA...</p>`;
+                            const llmResponse = await callGeminiAPI(data.llmPrompt);
+                            detailsContainer.innerHTML = `
                                 <h3 class="text-xl font-semibold text-slate-700 mb-2">${label}</h3>
-                                <p class="text-slate-600">${data.details}</p>`;
+                                <p class="text-slate-600">${data.details}</p>
+                                <p class="text-slate-700 mt-3 font-semibold">Justificación ✨:</p>
+                                <p class="text-slate-600">${llmResponse}</p>`;
+                        } else {
+                            detailsContainer.innerHTML = `
+                                <h3 class="text-xl font-semibold text-slate-700 mb-2">${label}</h3>
+                                <p class="text-slate-600">${data.details}</p>
+                                <p class="text-slate-600 mt-3">No hay justificación de IA disponible para esta categoría.</p>`;
                         }
                     } else {
                        detailsContainer.innerHTML = `
                             <h3 class="text-xl font-semibold text-slate-700 mb-2">Descripción de la Zona</h3>
-                            <p class="text-slate-600">Pase el cursor sobre el gráfico para ver los detalles de cada categoría de uso recomendado.</p>`;
+                            <p class="text-slate-600">Haga clic en el gráfico para ver los detalles y la justificación ✨ de cada categoría de uso recomendado.</p>`;
                     }
                 }
             }
@@ -508,8 +567,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const sections = document.querySelectorAll('.content-section');
 
     function switchTab(tabId) {
-        let chartCreated = false;
-
         tabs.forEach(tab => {
             tab.classList.toggle('active', tab.dataset.tab === tabId);
         });
@@ -547,11 +604,13 @@ document.addEventListener('DOMContentLoaded', () => {
     switchTab('overview'); 
 
     document.querySelectorAll('.soil-button').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const soilType = e.target.textContent;
+        button.addEventListener('click', async (e) => {
+            const soilType = e.target.dataset.soilType;
             const data = soilData[soilType];
             const container = document.getElementById('soil-details');
-            if (data) {
+            if (data && data.llmPrompt) {
+                container.innerHTML = `<div class="loading-spinner"></div><p class="text-center text-slate-600">Cargando explicación de IA...</p>`;
+                const llmResponse = await callGeminiAPI(data.llmPrompt);
                 let propertiesHtml = data.properties.map(prop => `
                     <li class="flex items-start">
                         <span class="text-green-500 mr-2 mt-1">&#10004;</span>
@@ -563,11 +622,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h4 class="text-lg font-bold text-slate-800">${data.title}</h4>
                     <p class="text-sm mb-2">${data.description}</p>
                     <ul class="space-y-1 text-sm">${propertiesHtml}</ul>
+                    <p class="text-slate-700 mt-3 font-semibold">Explicación ✨:</p>
+                    <p class="text-slate-600">${llmResponse}</p>
+                `;
+            } else if (data) {
+                let propertiesHtml = data.properties.map(prop => `
+                    <li class="flex items-start">
+                        <span class="text-green-500 mr-2 mt-1">&#10004;</span>
+                        <span>${prop}</span>
+                    </li>
+                `).join('');
+                
+                container.innerHTML = `
+                    <h4 class="text-lg font-bold text-slate-800">${data.title}</h4>
+                    <p class="text-sm mb-2">${data.description}</p>
+                    <ul class="space-y-1 text-sm">${propertiesHtml}</ul>
+                    <p class="text-slate-600 mt-3">No hay explicación de IA disponible para este tipo de suelo.</p>
                 `;
             }
         });
     });
 });
+</script>
 </script>
     <!-- N8N Chat Integration -->
 	<script type="module">
